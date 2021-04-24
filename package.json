@@ -1,0 +1,31 @@
+{
+  "type": "module",
+  "name": "Fizzmod4",
+  "version": "1.0.0",
+  "description": "TP4 de la capacitación de Fizzmod por medio de Educación IT",
+  "main": "server.js",
+  "scripts": {
+    "dev":"nodemon src/server.js",
+    "start": "node src/server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/PabloCh95/Fizzmod4.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/PabloCh95/Fizzmod4/issues"
+  },
+  "homepage": "https://github.com/PabloCh95/Fizzmod4#readme",
+  "dependencies": {
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "mongoose": "^5.12.5"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.7"
+  }
+}
