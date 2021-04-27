@@ -6,12 +6,13 @@ export const ingresar=async (req,res)=>{
         if(!name || !price || !description || !url){
             res.status(404).send({message:"Los campos tienen que tener contenido"});
         }else{
-            const product = await Product.create({
+            await Product.create({
                 name,
                 price,
                 description,
                 url
             })
+            res.status(200).send({message:'se creo un producto'});
         }
     }catch(error){
         console.log("error: ",error)
@@ -20,18 +21,16 @@ export const ingresar=async (req,res)=>{
 }
 //funcion para la lista de productos
 export const listar = (req,res)=>{
-    try{
         Product.find().then(products=>{
             if(!products){
                 res.status(404).send({message:'No se encontraron Productos'});
             }else{
                 res.render('listar',{products})
             }
+        }).catch((error)=>{
+            console.log(error);
+            res.status(500).send({message:"Error del servidor"});
         })
-    }catch(error){
-        console.log(error);
-        res.status(500).send({message:"Error del servidor"});
-    }
 }
 /*
 3) Se deberá disponer de otra ruta get ‘/listar’ la cual devuelva una vista dinámica con una tabla que

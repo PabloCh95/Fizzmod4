@@ -3,8 +3,8 @@ import express from 'express';
 import exphsb from 'express-handlebars'
 import dotenv from 'dotenv'
 import mongoose from 'mongoose'
-import routers from './routers/index-routers.js'
-import { version } from 'process'
+import Router from './routers/index-routers.js'
+
 
 
 //dotenv.config()
@@ -35,14 +35,14 @@ mongoose.connect(URL, {
     console.error(err);
 });
 
-app.use('/',routers)
+app.use('/api',Router)
 //conexion con el puerto
 app.listen(PORT, () => {
     console.log("############################");
     console.log("######## API REST ##########");
     console.log("############################");
 
-    console.log(`http://localhost:${PORT}/ Direccion del backend o servidor`);
+    console.log(`http://localhost:${PORT}/api/ Direccion del backend o servidor`);
     
 });
 /*
