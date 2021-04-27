@@ -20,6 +20,7 @@ app.use('.hbs',exphsb({extname:'.hbs', defaultLayout: 'index.hbs'}));
 app.set('views', './views');
 app.set('view engine', 'hbs');
 
+app.use(express.static('public'));
 //conexion a la base de datos
 //me daba error con mongoose asi que me fije en la documentacion.
 mongoose.set('useCreateIndex', true);
