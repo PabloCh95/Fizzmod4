@@ -1,9 +1,9 @@
 import express from 'express'
-
+import {ingresar,listar} from '../controllers/controllers.js'
 const Router=express.Router();
 
-Router.get('/listar',()=>{
-    console.log('ruta1')
-});
+Router.post('ingresar',ingresar);
+Router.get('listar',listar);
+Router.post('')
 
 export default Router;

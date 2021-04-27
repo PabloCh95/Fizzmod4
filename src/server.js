@@ -4,8 +4,10 @@ import exphsb from 'express-handlebars'
 import dotenv from 'dotenv'
 import mongoose from 'mongoose'
 import routers from './routers/index-routers.js'
+import { version } from 'process'
 
-dotenv.config()
+
+//dotenv.config()
 const app=express();
 const URL= `mongodb://pabloadmin:39208224@tp4-shard-00-00.aalch.mongodb.net:27017,tp4-shard-00-01.aalch.mongodb.net:27017,tp4-shard-00-02.aalch.mongodb.net:27017/Tp4?ssl=true&replicaSet=atlas-8gz350-shard-0&authSource=admin&retryWrites=true&w=majority`
 const PORT=4000
@@ -15,12 +17,11 @@ app.use(express.urlencoded({extended:true}))
 app.use(express.json());
 
 app.use('.hbs',exphsb({extname:'.hbs', defaultLayout: 'index.hbs'}));
-
-
 app.set('views', './views');
 app.set('view engine', 'hbs');
 
-app.use(express.static('public'));
+
+app.use(express.static(process.cwd()+'/src/public'));
 //conexion a la base de datos
 //me daba error con mongoose asi que me fije en la documentacion.
 mongoose.set('useCreateIndex', true);
@@ -34,14 +35,15 @@ mongoose.connect(URL, {
     console.error(err);
 });
 
-app.use('/api',routers)
+app.use('/',routers)
 //conexion con el puerto
 app.listen(PORT, () => {
     console.log("############################");
     console.log("######## API REST ##########");
     console.log("############################");
 
-    console.log(`http://localhost:${PORT}/api/ Direccion del backend o servidor`);
+    console.log(`http://localhost:${PORT}/ Direccion del backend o servidor`);
+    
 });
 /*
 TP4 – Servidores Avanzados en Node.js
