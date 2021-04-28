@@ -51,9 +51,12 @@ export const createEmail=async (req,res)=>{
     try{
         const {email}=req.body;
         if(emailValidation(email)){
-            await writeFile('email.dat', email);
+            await writeFile('correo.dat', email);
+            res.redirect('/');
         }
-    }catch(err){};
+    }catch(err){
+        console.log(err);
+    };
 }
 //envio de mail
 export const sendEmail = async (req,res)=>{

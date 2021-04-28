@@ -3,7 +3,7 @@ import express from 'express';
 import exphbs from 'express-handlebars'
 import dotenv from 'dotenv'
 import mongoose from 'mongoose'
-import Router from './routers/index-routers.js'
+import {ingresar,listar,addMail,createEmail} from './controllers/controllers.js'
 import {genEmail} from './controllers/controllers.js';
 
 
@@ -35,15 +35,18 @@ mongoose.connect(URL, {
 }).catch((err) => {
     console.error(err);
 });
-//rutas
-app.use('/api',Router)
+//rutasRouter.post('/ingresar',ingresar);
+app.post('/ingresar',ingresar);
+app.get('/listar',listar);
+app.get('/set-correo',addMail); 
+app.post('/set-correo',createEmail);
 //conexion con el puerto
 app.listen(PORT, () => {
     console.log("############################");
     console.log("######## API REST ##########");
     console.log("############################");
 
-    console.log(`http://localhost:${PORT}/api/ Direccion del backend o servidor`);
+    console.log(`http://localhost:${PORT} Direccion del backend o servidor`);
     
     genEmail();
 });
