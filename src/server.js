@@ -1,6 +1,6 @@
 import express from 'express';
 
-import exphsb from 'express-handlebars'
+import exphbs from 'express-handlebars'
 import dotenv from 'dotenv'
 import mongoose from 'mongoose'
 import Router from './routers/index-routers.js'
@@ -9,16 +9,17 @@ import Router from './routers/index-routers.js'
 
 //dotenv.config()
 const app=express();
-const URL= `mongodb://pabloadmin:39208224@tp4-shard-00-00.aalch.mongodb.net:27017,tp4-shard-00-01.aalch.mongodb.net:27017,tp4-shard-00-02.aalch.mongodb.net:27017/Tp4?ssl=true&replicaSet=atlas-8gz350-shard-0&authSource=admin&retryWrites=true&w=majority`
+const URL=`mongodb://pabloadmin:39208224@tp4-shard-00-00.aalch.mongodb.net:27017,tp4-shard-00-01.aalch.mongodb.net:27017,tp4-shard-00-02.aalch.mongodb.net:27017/Tp4?ssl=true&replicaSet=atlas-8gz350-shard-0&authSource=admin&retryWrites=true&w=majority`;
 const PORT=4000
 
 //configuraciones
 app.use(express.urlencoded({extended:true}))
 app.use(express.json());
 
-app.use('.hbs',exphsb({extname:'.hbs', defaultLayout: 'index.hbs'}));
-app.set('views', './views');
-app.set('view engine', 'hbs');
+
+app.set('views', process.cwd()+'/src/views/');
+app.engine('.hbs',exphbs({extname:'.hbs', defaultLayout: 'main'}))
+app.set('view engine', '.hbs');
 
 
 app.use(express.static(process.cwd()+'/src/public'));
@@ -34,7 +35,7 @@ mongoose.connect(URL, {
 }).catch((err) => {
     console.error(err);
 });
-
+//rutas
 app.use('/api',Router)
 //conexion con el puerto
 app.listen(PORT, () => {

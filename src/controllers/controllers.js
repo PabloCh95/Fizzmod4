@@ -1,4 +1,8 @@
 import Product from '../models/products.js';
+import nodemailer from 'nodemailer';
+import { google } from 'googleapis';
+import {emailValidation} from '../utils/mailValidation.js';
+import {writeFile,readFile} from 'fs/promises';
 //funcion para crear un producto
 export const ingresar=async (req,res)=>{
     try{
@@ -12,25 +16,95 @@ export const ingresar=async (req,res)=>{
                 description,
                 url
             })
-            res.status(200).send({message:'se creo un producto'});
+            const product = await Product.find();
+            if(product.length%10==0){
+                sendEmail();
+                res.redirect('/')
+            }else res.redirect('/');
         }
     }catch(error){
         console.log("error: ",error)
         res.status(500).send({message:"Error del servidor"})
     }
 }
+
 //funcion para la lista de productos
 export const listar = (req,res)=>{
-        Product.find().then(products=>{
+        Product.find().lean().then(products=>{
             if(!products){
-                res.status(404).send({message:'No se encontraron Productos'});
+                res.status(404).send({message:'No hay Productos para listar'});
             }else{
-                res.render('listar',{products})
+                res.render('index',{products})
+                
             }
         }).catch((error)=>{
             console.log(error);
             res.status(500).send({message:"Error del servidor"});
         })
+}
+//funcion para redireccionar a la page del formulario del mail
+export const addMail=(req,res)=>{
+    res.sendFile(process.cwd()+'/src/public/mail.html');
+}
+//envio de mail
+export const createEmail=async (req,res)=>{
+    try{
+        const {email}=req.body;
+        if(emailValidation(email)){
+            await writeFile('email.dat', email);
+        }
+    }catch(err){};
+}
+export const sendEmail = async (req,res)=>{
+   try{
+        const email = await readFile('correo.dat','utf-8');
+        if(emailValidation(email)){
+            await writeFile('email.data', Email);
+            //datos para consumir la api de gmail
+            const CLIENT_ID="767667904489-oa2ds3bl1o96tllvr28qecd7g7f39kgp.apps.googleusercontent.com";
+            const CLIENT_SECRET="emyytRprmzMrFkgAnfHRilEm";
+            const REDIRECT_URI="https://developers.google.com/oauthplayground";
+            const REFRESH_TOKEN="1//04GU8PrlZzsVcCgYIARAAGAQSNwF-L9Irg0kx7zrTUbP4y2PNSrRD_mmxOdf6Uqz1y-4tsPkqXoUzdCds-loSyBPyl8JjYOKZFz8";
+
+            const oAuth2Client= new google.auth.OAuth2(
+                CLIENT_ID,
+                CLIENT_SECRET,
+                REDIRECT_URI
+                );
+
+            oAuth2Client.setCredentials({refresh_token: REFRESH_TOKEN});
+        
+            const accessToken= await oAuth2Client.getAccessToken()
+
+            const transporter=nodemailer.createTransport({
+                service:"gmail",
+                auth:{
+                    type:"OAuth2",
+                    user:"ema1995.ch@gmail.com",
+                    clientId:CLIENT_ID,
+                    clientSecret:CLIENT_SECRET,
+                    refreshToken:REFRESH_TOKEN,
+                    accessToken:accessToken,
+                }
+            })
+            const mailOptions={
+                from:"Email TP FIZZMOD",
+                to:email,
+                subject:"Listado de Productos",
+                html: contentHTML,
+            }
+            //envia el mail
+            await transporter.sendMail(mailOptions,()=>{
+                    res.status(200).send({message:"Email Enviado"});
+                })
+        }else{
+                res.status(404).send({message:'Email invalido...'});
+        }
+
+    }catch(error){
+        console.error(error);
+        res.status(500).send({message:"Error al enviar email"});
+   }
 }
 /*
 3) Se deberá disponer de otra ruta get ‘/listar’ la cual devuelva una vista dinámica con una tabla que
@@ -38,5 +112,3 @@ contenga los productos ingresados. La tabla tendrá las columnas Nombre, Precio 
 el valor), Descripción y Foto (representarla como imágen). Esta vista podrá ser implementada con
 handlebars, ejs ó pug a elección.
 */
-
-//funcion para el envio de mails

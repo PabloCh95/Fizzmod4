@@ -1,15 +1,28 @@
-<!DOCTYPE html>
-<html lang="es">
-
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-
-<body>
-    {{{body}}}
-</body>
-
-</html>
+<div class="content-block">
+    <h2>Listado de productos</h2>
+    <div class="link-group">
+        <a href="/">Volver a ingreso de productos</a>
+    </div>
+    <div class="content-block">
+        {{#if products.length}}
+        <table>
+            <tr>
+                <th>Nombre</th>
+                <th>Precio</th>
+                <th>Descripción</th>
+                <th>Foto</th>
+            </tr>
+            {{#each products}}
+            <tr>
+                <td>{{name}}</td>
+                <td>${{price}}</td>
+                <td>{{description}}</td>
+                <td><img src={{url}} alt={{name}}></td>
+            </tr>
+            {{/each}}
+        </table>
+        {{else}}
+        <p class="ERROR">No hay productos para listar</p>
+        {{/if}}
+    </div>
+</div>
