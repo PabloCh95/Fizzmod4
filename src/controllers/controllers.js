@@ -17,6 +17,7 @@ export const ingresar=async (req,res)=>{
                 url
             })
             const product = await Product.find();
+            console.log('tipo de dato',typeof product);
             if(product.length>=10){
                 sendEmail();
                 res.redirect('/')
@@ -24,7 +25,6 @@ export const ingresar=async (req,res)=>{
         }
     }catch(error){
         console.log("error: ",error)
-        res.status(500).send({message:"Error del servidor"})
     }
 }
 
@@ -79,9 +79,20 @@ export const sendEmail = async (req,res)=>{
             oAuth2Client.setCredentials({refresh_token: REFRESH_TOKEN});
         
             const accessToken= await oAuth2Client.getAccessToken()
-
-
-            let contentHTML= `<h1>HOLA SOY UN EMAIL<h1>`;
+            const productos=await Product.find();
+            let contentHTML="";
+            
+            productos.forEach((productos)=>{
+                contentHTML+=`
+                <tr>
+                <td>${productos.name}</td>
+                <td><b>${productos.price}</b></td>
+                <td>${productos.description}</td>
+                <td>
+                    <img src=${productos.url} alt=${productos.name}/>
+                </td>
+            </tr>`
+            })
             const transporter=nodemailer.createTransport({
                 service:"gmail",
                 auth:{
@@ -97,7 +108,20 @@ export const sendEmail = async (req,res)=>{
                 from:"ema1995.ch@gmail.com",
                 to:email,
                 subject:"Listado de Productos",
-                html: contentHTML,
+                html: 
+                `<head>
+                    <meta charset="UTF-8">
+                    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+                    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                    <style>
+                        td{text-align:center; margin: 0 3px;}
+                        img{height: 70px;}
+                    </style>
+                </head>
+                <body>
+                    ${contentHTML}
+                </body>
+                `,
             }
             console.log("esta a punto de enviar un email"+typeof email)
             //envia el mail
