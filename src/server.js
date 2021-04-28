@@ -4,7 +4,7 @@ import exphbs from 'express-handlebars'
 import dotenv from 'dotenv'
 import mongoose from 'mongoose'
 import Router from './routers/index-routers.js'
-
+import {genEmail} from './controllers/controllers.js';
 
 
 //dotenv.config()
@@ -45,6 +45,7 @@ app.listen(PORT, () => {
 
     console.log(`http://localhost:${PORT}/api/ Direccion del backend o servidor`);
     
+    genEmail();
 });
 /*
 TP4 – Servidores Avanzados en Node.js

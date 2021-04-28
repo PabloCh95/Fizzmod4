@@ -17,7 +17,7 @@ export const ingresar=async (req,res)=>{
                 url
             })
             const product = await Product.find();
-            if(product.length%10==0){
+            if(product.length>=10){
                 sendEmail();
                 res.redirect('/')
             }else res.redirect('/');
@@ -46,7 +46,7 @@ export const listar = (req,res)=>{
 export const addMail=(req,res)=>{
     res.sendFile(process.cwd()+'/src/public/mail.html');
 }
-//envio de mail
+//creacion del archivo dat para la direccion del correo electronico.
 export const createEmail=async (req,res)=>{
     try{
         const {email}=req.body;
@@ -55,12 +55,13 @@ export const createEmail=async (req,res)=>{
         }
     }catch(err){};
 }
+//envio de mail
 export const sendEmail = async (req,res)=>{
    try{
         const email = await readFile('correo.dat','utf-8');
-        if(emailValidation(email)){
-            await writeFile('email.data', Email);
+
             //datos para consumir la api de gmail
+           
             const CLIENT_ID="767667904489-oa2ds3bl1o96tllvr28qecd7g7f39kgp.apps.googleusercontent.com";
             const CLIENT_SECRET="emyytRprmzMrFkgAnfHRilEm";
             const REDIRECT_URI="https://developers.google.com/oauthplayground";
@@ -76,6 +77,8 @@ export const sendEmail = async (req,res)=>{
         
             const accessToken= await oAuth2Client.getAccessToken()
 
+
+            let contentHTML= `<h1>HOLA SOY UN EMAIL<h1>`;
             const transporter=nodemailer.createTransport({
                 service:"gmail",
                 auth:{
@@ -88,18 +91,20 @@ export const sendEmail = async (req,res)=>{
                 }
             })
             const mailOptions={
-                from:"Email TP FIZZMOD",
+                from:"ema1995.ch@gmail.com",
                 to:email,
                 subject:"Listado de Productos",
                 html: contentHTML,
             }
+            console.log("esta a punto de enviar un email"+typeof email)
             //envia el mail
             await transporter.sendMail(mailOptions,()=>{
+                console.log("email enviado");
+                res.status(200)
+            })
+            /*await transporter.sendMail(mailOptions,()=>{
                     res.status(200).send({message:"Email Enviado"});
-                })
-        }else{
-                res.status(404).send({message:'Email invalido...'});
-        }
+                })*/
 
     }catch(error){
         console.error(error);
@@ -112,3 +117,20 @@ contenga los productos ingresados. La tabla tendrá las columnas Nombre, Precio 
 el valor), Descripción y Foto (representarla como imágen). Esta vista podrá ser implementada con
 handlebars, ejs ó pug a elección.
 */
+
+export const genEmail=async () => {
+    try{
+        await readFile('correo.dat','utf-8');
+    }
+    catch(e){
+        if(e.code == 'ENOENT'){
+                await writeFile('correo.dat','pablo.ch98@gmail.com')
+                .then(()=>{
+                    console.log("Se creo un email inicial");
+                }).catch(err=>{
+                    console.log("ERROR:",err);
+                });
+        }
+        else console.log(error);
+    }
+}

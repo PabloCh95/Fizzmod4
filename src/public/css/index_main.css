@@ -82,3 +82,21 @@
   width: 100%;
   color: white;
 }
+.div-enlaces {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+.div-enlaces a {
+  text-decoration: none;
+}
+
+label {
+  font-family: "Franklin Gothic Medium", "Arial Narrow", Arial, sans-serif;
+}
+
+.list footer {
+  background-color: rgb(20, 20, 20);
+  width: 100%;
+  color: white;
+}
