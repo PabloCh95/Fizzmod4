@@ -10,7 +10,7 @@ import {genEmail} from './controllers/controllers.js';
 //dotenv.config()
 const app=express();
 const URL=`mongodb://pabloadmin:39208224@tp4-shard-00-00.aalch.mongodb.net:27017,tp4-shard-00-01.aalch.mongodb.net:27017,tp4-shard-00-02.aalch.mongodb.net:27017/Tp4?ssl=true&replicaSet=atlas-8gz350-shard-0&authSource=admin&retryWrites=true&w=majority`;
-const PORT=4000
+const PORT=process.env.PORT || 4000
 
 //configuraciones
 app.use(express.urlencoded({extended:true}))
